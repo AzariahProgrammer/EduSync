@@ -71,7 +71,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-medium;
   }
 
   /* Custom Scrollbar */
@@ -91,5 +91,17 @@
 
   ::-webkit-scrollbar-thumb:hover {
     background-color: hsl(var(--primary));
+  }
+}
+
+@layer components {
+  /* Dark mode autofill */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px hsl(var(--background)) inset !important;
+    -webkit-text-fill-color: hsl(var(--foreground)) !important;
+    caret-color: hsl(var(--foreground));
   }
 }
