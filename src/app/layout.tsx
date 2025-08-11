@@ -23,7 +23,7 @@ export default function RootLayout({
 
     const timer = setTimeout(() => {
       setClosing(true); 
-    }, 1500);
+    }, 4000);
 
     return () => clearTimeout(timer);
   }, []);
