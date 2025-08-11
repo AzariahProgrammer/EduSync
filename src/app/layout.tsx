@@ -15,19 +15,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
   const [closing, setClosing] = useState(false);
 
   useEffect(() => {
-    // This is a simple way to hide the loader after a short delay.
-    // In a real app, you might tie this to data fetching or other async operations.
+    setMounted(true);
+
     const timer = setTimeout(() => {
-      setClosing(true); // Start the fade-out animation
-      setTimeout(() => setLoading(false), 500); // Remove from DOM after animation
-    }, 1500); // 1.5 second delay
+      setClosing(true); 
+    }, 1500);
 
     return () => clearTimeout(timer);
   }, []);
+  
+  const showLoadingScreen = !mounted || (mounted && !closing);
+
 
   return (
     <html lang="en" className="dark">
@@ -42,8 +44,8 @@ export default function RootLayout({
         <meta name="description" content="Your personalized learning journey." />
       </head>
       <body className="font-body antialiased">
-        {loading && <LoadingScreen isClosing={closing} />}
-        <div className={cn("transition-opacity duration-500", loading ? "opacity-0" : "opacity-100")}>
+        {showLoadingScreen && <LoadingScreen isClosing={closing} />}
+        <div className={cn("transition-opacity duration-500", showLoadingScreen ? "opacity-0" : "opacity-100")}>
           <AuthProvider>
             <SelectionMenu>
               {children}
