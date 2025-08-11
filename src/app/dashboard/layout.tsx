@@ -8,6 +8,7 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/dashboard/AppSidebar';
 import { Header } from '@/components/dashboard/Header';
 import { BookOpenCheck, Loader2 } from 'lucide-react';
+import { LoadingScreen } from '@/components/common/LoadingScreen';
 
 export default function DashboardLayout({
   children,
@@ -24,12 +25,7 @@ export default function DashboardLayout({
   }, [user, loading, router]);
 
   if (loading || !user) {
-    return (
-      <div className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-background grid-bg">
-        <BookOpenCheck className="h-12 w-12 animate-pulse text-primary" />
-        <p className="text-muted-foreground">Developed By Azariah Anderson</p>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   return (
