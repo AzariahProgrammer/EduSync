@@ -3,7 +3,7 @@
 
 import { useAuth } from '@/context/AuthContext';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Video, MessagesSquare, KanbanSquare, Calendar, FolderKanban, Trophy, Lightbulb, Package, BrainCircuit, Presentation, UploadCloud, Monitor, Bot, PenSquare, Folder, Check, FileCheck, Users, School } from 'lucide-react';
+import { Video, MessagesSquare, KanbanSquare, Folder, Check, FileCheck, Users, School, Presentation, UploadCloud, Monitor, Bot, BrainCircuit, PenSquare, FolderKanban, Trophy, Lightbulb } from 'lucide-react';
 import { useTypewriter } from '@/hooks/use-typewriter';
 
 export function DashboardClient() {
