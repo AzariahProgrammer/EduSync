@@ -10,7 +10,7 @@ import {
   SidebarMenuButton,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import { BookOpenCheck, LayoutDashboard, LogOut, User, ChevronsUpDown } from 'lucide-react';
+import { BookOpenCheck, LayoutDashboard, LogOut, User, ChevronsUpDown, FolderKanban } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Separator } from '../ui/separator';
@@ -62,6 +62,14 @@ export function AppSidebar() {
               <Link href="/dashboard">
                 <LayoutDashboard />
                 <span className="group-data-[collapsible=icon]:hidden">Dashboard</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild isActive={pathname.startsWith('/dashboard/subjects')} tooltip="Subjects">
+              <Link href="/dashboard/subjects">
+                <FolderKanban />
+                <span className="group-data-[collapsible=icon]:hidden">Subjects</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

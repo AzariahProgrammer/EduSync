@@ -25,12 +25,15 @@ export default function DashboardLayout({
   if (loading || !user) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-background grid-bg">
-        <div className="flex flex-col items-center gap-4">
-          <div className="mb-4 flex items-center gap-3 text-2xl font-bold text-primary">
-            <BookOpenCheck className="h-10 w-10 animate-pulse" />
-            <h1 className="font-headline text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">EduSync</h1>
+        <div className="flex flex-col items-center gap-6 text-center">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex items-center gap-3 text-2xl font-bold text-primary">
+              <BookOpenCheck className="h-12 w-12 animate-pulse" />
+              <h1 className="font-headline text-5xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">EduSync</h1>
+            </div>
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="font-headline text-lg text-muted-foreground mt-4">Developed By Azariah Anderson</p>
         </div>
       </div>
     );
