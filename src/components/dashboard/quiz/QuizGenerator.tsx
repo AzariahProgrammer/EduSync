@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -21,17 +21,21 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Slider } from '@/components/ui/slider';
 import { ImageUploader } from '@/components/common/ImageUploader';
+import { Textarea } from '@/components/ui/textarea';
 
 const formSchema = z.object({
   topic: z.string().min(3, { message: 'Topic must be at least 3 characters.' }),
   questionCount: z.number().int().min(1).max(10).default(5),
+  sourceText: z.string().optional(),
 });
 
 interface QuizGeneratorProps {
   subject: string;
+  initialTopic?: string;
+  sourceText?: string;
 }
 
-export function QuizGenerator({ subject }: QuizGeneratorProps) {
+export function QuizGenerator({ subject, initialTopic = '', sourceText }: QuizGeneratorProps) {
   const [loading, setLoading] = useState(false);
   const [loadingFeedback, setLoadingFeedback] = useState(false);
   const [quiz, setQuiz] = useState<QuizOutput | null>(null);
@@ -43,10 +47,23 @@ export function QuizGenerator({ subject }: QuizGeneratorProps) {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { topic: '', questionCount: 5 },
+    defaultValues: { 
+      topic: initialTopic, 
+      questionCount: 5,
+      sourceText: sourceText,
+    },
   });
 
   const questionCount = form.watch('questionCount');
+
+  // Automatically generate quiz if sourceText is provided
+  useEffect(() => {
+    if (sourceText) {
+      onFormSubmit(form.getValues());
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sourceText]);
+
 
   const topicPlaceholders = useMemo(() => ({
     'Mathematics': "e.g., 'Algebraic Expressions' or 'Euclidean Geometry'",
@@ -71,6 +88,7 @@ export function QuizGenerator({ subject }: QuizGeneratorProps) {
         topic: values.topic,
         questionCount: values.questionCount,
         imageUrls: imageUrls.length > 0 ? imageUrls : undefined,
+        sourceText: values.sourceText,
       });
       setQuiz(result);
     } catch (error) {
@@ -148,7 +166,7 @@ export function QuizGenerator({ subject }: QuizGeneratorProps) {
     setSubmitted(false);
     setFeedback(null);
     setImageUrls([]);
-    form.reset();
+    form.reset({ topic: '', questionCount: 5, sourceText: undefined });
   }
 
   return (
@@ -193,11 +211,27 @@ export function QuizGenerator({ subject }: QuizGeneratorProps) {
                 )}
                 />
 
-                <div>
-                <FormLabel>Upload Your Work (Optional)</FormLabel>
-                <p className="text-sm text-muted-foreground mb-2">Upload up to 5 images of your worksheets or textbook pages.</p>
-                <ImageUploader imageUrls={imageUrls} setImageUrls={setImageUrls} maxFiles={5} />
-                </div>
+                {sourceText ? (
+                   <FormField
+                    control={form.control}
+                    name="sourceText"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Source Text from Notes</FormLabel>
+                        <FormControl>
+                          <Textarea {...field} readOnly className="h-40 bg-secondary/50" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ) : (
+                  <div>
+                    <FormLabel>Upload Your Work (Optional)</FormLabel>
+                    <p className="text-sm text-muted-foreground mb-2">Upload up to 5 images of your worksheets or textbook pages.</p>
+                    <ImageUploader imageUrls={imageUrls} setImageUrls={setImageUrls} maxFiles={5} />
+                  </div>
+                )}
             </div>
             <Button type="submit" disabled={loading} className="w-full sm:w-auto">
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

@@ -2,21 +2,22 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Loader2, ChevronRight } from 'lucide-react';
+import { Loader2, Repeat, MoveRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { generateNotes, type NotesOutput } from '@/ai/flows/notes-generator';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Slider } from '@/components/ui/slider';
 import { ImageUploader } from '@/components/common/ImageUploader';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
   topic: z.string().min(3, { message: 'Topic must be at least 3 characters long.' }),
@@ -27,11 +28,48 @@ interface NotesGeneratorProps {
   subject: string;
 }
 
+const FlipCard = ({ term, definition }: { term: string, definition: string }) => {
+    const [isFlipped, setIsFlipped] = useState(false);
+    return (
+        <div className="perspective-1000" onClick={() => setIsFlipped(!isFlipped)}>
+            <div
+                className={cn(
+                    "relative w-full h-full min-h-[150px] transform-style-3d transition-transform duration-500",
+                    isFlipped && 'rotate-y-180'
+                )}
+            >
+                {/* Front of the card */}
+                <div className="absolute w-full h-full backface-hidden">
+                    <Card className="bg-secondary/30 h-full flex flex-col items-center justify-center p-4 text-center">
+                        <h4 className="font-semibold text-lg">{term}</h4>
+                        <div className="absolute bottom-2 right-2 flex items-center gap-1 text-xs text-muted-foreground">
+                            <Repeat className="h-3 w-3" />
+                            <span>Click to flip</span>
+                        </div>
+                    </Card>
+                </div>
+                {/* Back of the card */}
+                <div className="absolute w-full h-full backface-hidden rotate-y-180">
+                    <Card className="bg-primary/10 border-primary/50 h-full flex flex-col items-center justify-center p-4 text-center">
+                        <p className="text-muted-foreground">{definition}</p>
+                         <div className="absolute bottom-2 right-2 flex items-center gap-1 text-xs text-muted-foreground">
+                            <Repeat className="h-3 w-3" />
+                            <span>Click to flip</span>
+                        </div>
+                    </Card>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+
 export function NotesGenerator({ subject }: NotesGeneratorProps) {
   const [loading, setLoading] = useState(false);
   const [notes, setNotes] = useState<NotesOutput | null>(null);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const { toast } = useToast();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -73,6 +111,20 @@ export function NotesGenerator({ subject }: NotesGeneratorProps) {
     } finally {
       setLoading(false);
     }
+  }
+
+  const handleConvertToQuiz = () => {
+    if (!notes) return;
+    const sourceText = notes.notes.map(note => `Term: ${note.term}\nDefinition: ${note.definition}`).join('\n\n');
+    const topic = form.getValues('topic');
+    const subjectPath = subject.toLowerCase().replace(/\s+/g, '-');
+    
+    const query = new URLSearchParams({
+        topic: topic,
+        sourceText: sourceText,
+    }).toString();
+
+    router.push(`/dashboard/subjects/${subjectPath}/quiz?${query}`);
   }
 
   return (
@@ -138,24 +190,17 @@ export function NotesGenerator({ subject }: NotesGeneratorProps) {
       )}
 
       {notes && notes.notes.length > 0 && (
-        <div className="space-y-3 mt-6">
-           <h3 className="font-headline text-lg font-semibold">Generated Flip Cards:</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="space-y-6 mt-6">
+           <div className="flex flex-wrap items-center justify-between gap-4">
+            <h3 className="font-headline text-lg font-semibold">Generated Flip Cards:</h3>
+            <Button onClick={handleConvertToQuiz}>
+                Convert Notes to Quiz
+                <MoveRight className="ml-2 h-4 w-4" />
+            </Button>
+           </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {notes.notes.map((note, index) => (
-              <Collapsible key={index} className="group">
-                <Card className="bg-secondary/30 min-h-[150px] flex flex-col justify-center transition-all duration-300 [&[data-state=open]]:border-primary/50 [&[data-state=open]]:bg-primary/5">
-                  <CollapsibleTrigger asChild>
-                    <div className="flex items-center justify-between w-full p-4 cursor-pointer text-center flex-grow">
-                      <h4 className="font-semibold mx-auto text-lg transition-transform duration-300 group-data-[state=open]:-translate-y-2">{note.term}</h4>
-                    </div>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                      <CardContent className="border-t border-border/50 p-4">
-                          <p className="text-muted-foreground text-center">{note.definition}</p>
-                      </CardContent>
-                  </CollapsibleContent>
-                </Card>
-              </Collapsible>
+                <FlipCard key={index} term={note.term} definition={note.definition} />
             ))}
           </div>
         </div>

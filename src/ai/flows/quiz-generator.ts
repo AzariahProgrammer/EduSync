@@ -16,6 +16,7 @@ const QuizInputSchema = z.object({
   topic: z.string().describe('The specific topic within the subject for which to generate the quiz.'),
   questionCount: z.number().int().min(1).max(10).default(5).describe('The number of questions to generate.'),
   imageUrls: z.array(z.string().url()).optional().describe('An optional list of image data URIs to use as a source for the quiz.'),
+  sourceText: z.string().optional().describe('An optional block of text (e.g., from notes) to use as the primary source for generating the quiz.'),
 });
 export type QuizInput = z.infer<typeof QuizInputSchema>;
 
@@ -48,7 +49,12 @@ const quizGeneratorPrompt = ai.definePrompt({
   Topic: {{{topic}}}
   Number of Questions: {{{questionCount}}}
   
-  {{#if imageUrls}}
+  {{#if sourceText}}
+  Use the following text as the exclusive source material for the questions. The topic and subject provide context.
+  ---
+  {{{sourceText}}}
+  ---
+  {{else if imageUrls}}
   Use the information from the following image(s) as the primary source material for the questions. The topic provides context.
   {{#each imageUrls}}
   - Image: {{media url=this}}
