@@ -4,7 +4,6 @@
 import { useAuth } from '@/context/AuthContext';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { AILearningPath } from './AILearningPath';
 import Image from 'next/image';
 import { Button } from '../ui/button';
 
@@ -21,8 +20,6 @@ export function DashboardClient() {
           <p className="text-muted-foreground">Continue your learning journey and explore new paths.</p>
         </CardContent>
       </Card>
-
-      <AILearningPath />
 
     </div>
   );
