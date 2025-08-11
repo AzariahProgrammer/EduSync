@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { AuthProvider } from '@/context/AuthContext';
 import { Toaster } from '@/components/ui/toaster';
+import { SelectionMenu } from '@/components/common/SelectionMenu';
 
 export const metadata: Metadata = {
   title: 'EduSync',
@@ -25,7 +26,9 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased">
         <AuthProvider>
-          {children}
+          <SelectionMenu>
+            {children}
+          </SelectionMenu>
           <Toaster />
         </AuthProvider>
       </body>
