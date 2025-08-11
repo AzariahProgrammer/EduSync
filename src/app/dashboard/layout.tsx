@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useAuth } from '@/context/AuthContext';
@@ -26,10 +27,7 @@ export default function DashboardLayout({
     return (
       <div className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-background grid-bg">
         <BookOpenCheck className="h-12 w-12 animate-pulse text-primary" />
-        <div className="flex items-center gap-2 text-muted-foreground">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          <p>Loading your learning space...</p>
-        </div>
+        <p className="text-muted-foreground">Made By Azariah Anderson</p>
       </div>
     );
   }

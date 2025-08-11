@@ -1,8 +1,9 @@
+
 "use client";
 
 import { useState, useRef, useEffect, useCallback, ReactNode } from 'react';
 import { Copy, Sparkles, Loader2 } from 'lucide-react';
-import { enhanceText } from '@/ai/flows/enhance-text';
+import { enhanceText, EnhanceTextInput } from '@/ai/flows/enhance-text';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import {
@@ -24,36 +25,37 @@ export function SelectionMenu({ children }: SelectionMenuProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const selectionRef = useRef<Selection | null>(null);
   const { toast } = useToast();
 
   const handleMouseUp = useCallback((event: MouseEvent) => {
-    const selection = window.getSelection();
-    selectionRef.current = selection;
-    const selectedText = selection?.toString().trim();
+    // Check if the click is inside the menu itself
+    if (menuRef.current && menuRef.current.contains(event.target as Node)) {
+      return;
+    }
 
-    if (selectedText) {
-      const range = selection!.getRangeAt(0);
+    const selection = window.getSelection();
+    const selectedText = selection?.toString().trim() ?? '';
+
+    // Only show the menu if there is a non-empty, non-whitespace selection
+    if (selection && !selection.isCollapsed && selectedText) {
+      const range = selection.getRangeAt(0);
       const rect = range.getBoundingClientRect();
-      
-      const targetIsInputOrTextarea = event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement;
-      
-      if (!targetIsInputOrTextarea) {
+      const target = event.target as HTMLElement;
+
+      // Don't show menu on inputs or textareas
+      if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA') {
         setMenu({
           x: rect.left + rect.width / 2,
-          y: rect.top - 10,
+          y: rect.top + window.scrollY - 10,
           text: selectedText,
         });
       }
     } else {
-      // Clicked outside the menu?
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setMenu(null);
-      }
+      setMenu(null);
     }
   }, []);
-  
-  const handleCopy = () => {
+
+  const handleCopy = useCallback(() => {
     if (menu?.text) {
       navigator.clipboard.writeText(menu.text);
       toast({
@@ -62,14 +64,16 @@ export function SelectionMenu({ children }: SelectionMenuProps) {
       });
       setMenu(null);
     }
-  };
+  }, [menu, toast]);
 
-  const handleEnhance = async () => {
+  const handleEnhance = useCallback(async () => {
     if (menu?.text) {
+      const textToEnhance = menu.text;
+      setMenu(null); // Close the menu immediately
       setIsLoading(true);
       setIsModalOpen(true);
       try {
-        const result = await enhanceText({ text: menu.text });
+        const result = await enhanceText({ text: textToEnhance });
         setEnhancedContent(result.enhancedText);
       } catch (error) {
         console.error("Failed to enhance text:", error);
@@ -81,11 +85,10 @@ export function SelectionMenu({ children }: SelectionMenuProps) {
         setIsModalOpen(false);
       } finally {
         setIsLoading(false);
-        setMenu(null);
       }
     }
-  };
-  
+  }, [menu, toast]);
+
   const closeModal = () => {
     setIsModalOpen(false);
     setEnhancedContent(null);
@@ -113,7 +116,7 @@ export function SelectionMenu({ children }: SelectionMenuProps) {
         >
           <button
             onClick={handleCopy}
-            className="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-primary-foreground/80 transition-colors hover:bg-primary/20 hover:text-primary-foreground"
+            className="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-foreground/80 transition-colors hover:bg-primary/20 hover:text-foreground"
           >
             <Copy className="h-4 w-4" />
             Copy
@@ -121,14 +124,14 @@ export function SelectionMenu({ children }: SelectionMenuProps) {
           <div className="h-4 w-px bg-border"></div>
           <button
             onClick={handleEnhance}
-            className="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-primary-foreground/80 transition-colors hover:bg-primary/20 hover:text-primary-foreground"
+            className="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-foreground/80 transition-colors hover:bg-primary/20 hover:text-foreground"
           >
             <Sparkles className="h-4 w-4 text-primary" />
             Enhance
           </button>
         </div>
       )}
-      
+
       <Dialog open={isModalOpen} onOpenChange={closeModal}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
