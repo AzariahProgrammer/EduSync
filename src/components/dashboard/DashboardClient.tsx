@@ -4,21 +4,27 @@
 import { useAuth } from '@/context/AuthContext';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Video, MessagesSquare, KanbanSquare, Calendar, Folder, Trophy, Package, Check, Lightbulb } from 'lucide-react';
+import { useTypewriter } from '@/hooks/use-typewriter';
 
 export function DashboardClient() {
   const { user } = useAuth();
+  
+  const welcomeText = useTypewriter(`Welcome back, ${user?.displayName || user?.email?.split('@')[0] || 'learner'}!`, 50);
+  const subtitleText = useTypewriter('Continue your learning journey and explore new paths.', 25, 1000);
 
   return (
     <div className="space-y-8">
       <Card className="bg-card/50 backdrop-blur-sm border-border/20 overflow-hidden">
-        <CardContent className="p-6">
-          <div className="animate-fade-in-up">
+        <CardContent className="p-6 min-h-[120px]">
+          <div>
             <h1 className="font-headline text-3xl font-bold tracking-tight">
-              Welcome back, <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">{user?.displayName || user?.email?.split('@')[0] || 'learner'}</span>!
+              {welcomeText.split(', ').map((part, index) => 
+                index === 0 ? <span key={index}>{part}, </span> : <span key={index} className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">{part}</span>
+              )}
             </h1>
           </div>
-          <div className="animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-            <p className="text-muted-foreground">Continue your learning journey and explore new paths.</p>
+          <div>
+            <p className="text-muted-foreground">{subtitleText}</p>
           </div>
         </CardContent>
       </Card>

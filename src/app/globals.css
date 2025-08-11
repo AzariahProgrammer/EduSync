@@ -138,4 +138,20 @@
       animation-timing-function: ease-out;
       animation-fill-mode: forwards;
     }
+    .blinking-cursor {
+        display: inline-block;
+        width: 2px;
+        height: 1em;
+        background-color: hsl(var(--primary));
+        animation: blink 1s step-end infinite;
+    }
+}
+
+@keyframes blink {
+    from, to {
+        background-color: transparent;
+    }
+    50% {
+        background-color: hsl(var(--primary));
+    }
 }
