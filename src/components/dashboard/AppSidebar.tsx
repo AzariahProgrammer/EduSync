@@ -26,6 +26,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
+import { ScrollArea } from '../ui/scroll-area';
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -56,24 +57,26 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
       <SidebarContent className="p-2">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={pathname === '/dashboard'} tooltip="Dashboard">
-              <Link href="/dashboard">
-                <LayoutDashboard />
-                <span className="group-data-[collapsible=icon]:hidden">Dashboard</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={pathname.startsWith('/dashboard/subjects')} tooltip="Subjects">
-              <Link href="/dashboard/subjects">
-                <FolderKanban />
-                <span className="group-data-[collapsible=icon]:hidden">Subjects</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <ScrollArea className="h-full">
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={pathname === '/dashboard'} tooltip="Dashboard">
+                <Link href="/dashboard">
+                  <LayoutDashboard />
+                  <span className="group-data-[collapsible=icon]:hidden">Dashboard</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={pathname.startsWith('/dashboard/subjects')} tooltip="Subjects">
+                <Link href="/dashboard/subjects">
+                  <FolderKanban />
+                  <span className="group-data-[collapsible=icon]:hidden">Subjects</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </ScrollArea>
       </SidebarContent>
       <SidebarFooter>
         <Separator className="my-2 bg-border/50" />

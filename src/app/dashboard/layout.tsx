@@ -4,9 +4,10 @@
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { SidebarProvider } from '@/components/ui/sidebar';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/dashboard/AppSidebar';
 import { BookOpenCheck, Loader2 } from 'lucide-react';
+import { Header } from '@/components/dashboard/Header';
 
 export default function DashboardLayout({
   children,
@@ -43,8 +44,11 @@ export default function DashboardLayout({
     <div className="flex h-screen w-full bg-background grid-bg">
       <SidebarProvider>
         <AppSidebar />
-        <div className="flex flex-1 flex-col overflow-y-auto">
-          <main className="flex-1 p-4 sm:p-6 md:p-8">{children}</main>
+        <div className="flex flex-1 flex-col">
+          <Header />
+          <SidebarInset>
+            <main className="flex-1 p-4 sm:p-6 md:p-8">{children}</main>
+          </SidebarInset>
         </div>
       </SidebarProvider>
     </div>
