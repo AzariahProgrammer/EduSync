@@ -21,7 +21,7 @@ export function AppSidebar() {
       <SidebarHeader>
         <div className="flex items-center gap-2 pl-2">
           <BookOpenCheck className="h-8 w-8 text-primary" />
-          <h1 className="font-headline text-2xl font-bold group-data-[collapsible=icon]:hidden">EduSync</h1>
+          <h1 className="font-headline text-2xl font-bold group-data-[collapsible=icon]:hidden bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">EduSync</h1>
         </div>
       </SidebarHeader>
       <SidebarContent className="p-2">

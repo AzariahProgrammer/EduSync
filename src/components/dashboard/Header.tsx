@@ -27,8 +27,18 @@ export function Header() {
     router.push('/');
   };
 
+  const getInitials = (name?: string | null, email?: string | null) => {
+    if (name) {
+      return name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+    }
+    if (email) {
+      return email[0].toUpperCase();
+    }
+    return 'L';
+  }
+
   return (
-    <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background/80 px-4 backdrop-blur-sm md:px-6">
+    <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-4 border-b border-border/50 bg-background/50 px-4 backdrop-blur-sm md:px-6">
       <div className="md:hidden">
         <SidebarTrigger />
       </div>
@@ -37,9 +47,9 @@ export function Header() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                <Avatar className="h-9 w-9">
+                <Avatar className="h-9 w-9 border-2 border-primary/50">
                   <AvatarImage src={user.photoURL || ''} alt="User avatar" />
-                  <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
+                  <AvatarFallback className="bg-secondary text-secondary-foreground">{getInitials(user.displayName, user.email)}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>

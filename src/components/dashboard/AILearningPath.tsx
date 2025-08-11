@@ -54,9 +54,9 @@ export function AILearningPath() {
   }
 
   return (
-    <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20">
+    <Card className="bg-gradient-to-br from-secondary/30 to-background border-border/50">
       <CardHeader>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <Sparkles className="h-6 w-6 text-primary" />
           <CardTitle className="font-headline text-2xl">Personalized Learning Path</CardTitle>
         </div>
@@ -99,11 +99,11 @@ export function AILearningPath() {
         )}
         {suggestions && suggestions.suggestedMaterials.length > 0 && (
           <div className="mt-6">
-            <h3 className="font-headline text-lg font-semibold mb-2">Here's your suggested path:</h3>
+            <h3 className="font-headline text-lg font-semibold mb-3">Here's your suggested path:</h3>
             <ul className="space-y-2">
               {suggestions.suggestedMaterials.map((material, index) => (
-                <li key={index} className="flex items-start gap-3 rounded-md border bg-background/50 p-3 transition-colors hover:bg-background/80">
-                  <BookMarked className="mt-1 h-4 w-4 flex-shrink-0 text-accent" />
+                <li key={index} className="flex items-start gap-3 rounded-md border border-border/50 bg-background/50 p-3 transition-colors hover:bg-secondary/40">
+                  <BookMarked className="mt-1 h-4 w-4 flex-shrink-0 text-primary/80" />
                   <span>{material}</span>
                 </li>
               ))}

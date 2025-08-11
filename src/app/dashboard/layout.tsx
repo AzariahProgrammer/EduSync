@@ -6,7 +6,6 @@ import { useEffect } from 'react';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/dashboard/AppSidebar';
 import { Header } from '@/components/dashboard/Header';
-import { Skeleton } from '@/components/ui/skeleton';
 import { BookOpenCheck, Loader2 } from 'lucide-react';
 
 export default function DashboardLayout({
@@ -25,7 +24,7 @@ export default function DashboardLayout({
 
   if (loading || !user) {
     return (
-      <div className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-background">
+      <div className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-background grid-bg">
         <BookOpenCheck className="h-12 w-12 animate-pulse text-primary" />
         <div className="flex items-center gap-2 text-muted-foreground">
           <Loader2 className="h-4 w-4 animate-spin" />
@@ -36,7 +35,7 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex h-screen w-full">
+    <div className="flex h-screen w-full bg-background grid-bg">
       <SidebarProvider>
         <AppSidebar />
         <div className="flex flex-1 flex-col overflow-y-auto">

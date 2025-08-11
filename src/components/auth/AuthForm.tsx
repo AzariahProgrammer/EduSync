@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
 
@@ -22,12 +22,17 @@ import {
 } from '@/components/ui/form';
 import { Loader2 } from 'lucide-react';
 
-const formSchema = z.object({
+const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
   password: z.string().min(6, { message: "Password must be at least 6 characters." }),
 });
 
-type AuthFormValues = z.infer<typeof formSchema>;
+const signupSchema = z.object({
+  username: z.string().min(3, { message: "Username must be at least 3 characters." }).max(20, { message: "Username must be less than 20 characters."}),
+  email: z.string().email({ message: "Invalid email address." }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters." }),
+});
+
 
 interface AuthFormProps {
   mode: 'login' | 'signup';
@@ -37,12 +42,16 @@ export function AuthForm({ mode }: AuthFormProps) {
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  
+  const formSchema = mode === 'login' ? loginSchema : signupSchema;
+  type AuthFormValues = z.infer<typeof formSchema>;
 
   const form = useForm<AuthFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: '',
       password: '',
+      ...(mode === 'signup' && { username: '' }),
     },
   });
 
@@ -50,15 +59,20 @@ export function AuthForm({ mode }: AuthFormProps) {
     setLoading(true);
     try {
       if (mode === 'signup') {
-        await createUserWithEmailAndPassword(auth, values.email, values.password);
+        const signupValues = values as z.infer<typeof signupSchema>;
+        const userCredential = await createUserWithEmailAndPassword(auth, signupValues.email, signupValues.password);
+        await updateProfile(userCredential.user, {
+          displayName: signupValues.username,
+        });
       } else {
-        await signInWithEmailAndPassword(auth, values.email, values.password);
+        const loginValues = values as z.infer<typeof loginSchema>;
+        await signInWithEmailAndPassword(auth, loginValues.email, loginValues.password);
       }
       router.push('/dashboard');
     } catch (error: any) {
       const errorCode = error.code;
       let errorMessage = "An unexpected error occurred. Please try again.";
-      if (errorCode === 'auth/user-not-found' || errorCode === 'auth/wrong-password') {
+      if (errorCode === 'auth/user-not-found' || errorCode === 'auth/wrong-password' || errorCode === 'auth/invalid-credential') {
         errorMessage = 'Invalid email or password.';
       } else if (errorCode === 'auth/email-already-in-use') {
         errorMessage = 'This email address is already in use.';
@@ -75,13 +89,28 @@ export function AuthForm({ mode }: AuthFormProps) {
   };
 
   return (
-    <Card className="border-border/50">
+    <Card className="bg-card/50 backdrop-blur-sm border-border/20">
       <CardHeader>
         <CardTitle className="font-headline text-2xl">{mode === 'login' ? 'Login' : 'Sign Up'}</CardTitle>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="space-y-4">
+            {mode === 'signup' && (
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input placeholder="your_username" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="email"
