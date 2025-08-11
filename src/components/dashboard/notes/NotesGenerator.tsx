@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,14 +18,19 @@ import { Slider } from '@/components/ui/slider';
 import { ImageUploader } from '@/components/common/ImageUploader';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { Textarea } from '@/components/ui/textarea';
+
 
 const formSchema = z.object({
   topic: z.string().min(3, { message: 'Topic must be at least 3 characters long.' }),
   notesCount: z.number().min(1).max(20),
+  sourceText: z.string().optional(),
 });
 
 interface NotesGeneratorProps {
   subject: string;
+  initialTopic?: string;
+  sourceText?: string;
 }
 
 const FlipCard = ({ term, definition }: { term: string, definition: string }) => {
@@ -64,7 +69,7 @@ const FlipCard = ({ term, definition }: { term: string, definition: string }) =>
 };
 
 
-export function NotesGenerator({ subject }: NotesGeneratorProps) {
+export function NotesGenerator({ subject, initialTopic = '', sourceText }: NotesGeneratorProps) {
   const [loading, setLoading] = useState(false);
   const [notes, setNotes] = useState<NotesOutput | null>(null);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
@@ -73,10 +78,22 @@ export function NotesGenerator({ subject }: NotesGeneratorProps) {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { topic: '', notesCount: 5 },
+    defaultValues: { 
+        topic: initialTopic, 
+        notesCount: 5,
+        sourceText: sourceText,
+    },
   });
   
   const notesCount = form.watch('notesCount');
+
+  // Automatically generate notes if sourceText is provided from quiz
+  useEffect(() => {
+    if (sourceText) {
+      onSubmit(form.getValues());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sourceText]);
 
   const topicPlaceholders = useMemo(() => ({
     'Mathematics': "e.g., 'Quadratic Equations' or 'Trigonometry'",
@@ -89,16 +106,21 @@ export function NotesGenerator({ subject }: NotesGeneratorProps) {
   
   const placeholder = topicPlaceholders[subject as keyof typeof topicPlaceholders] || topicPlaceholders.Default;
 
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
     setNotes(null);
+    const { dismiss } = toast({
+      title: 'AI is thinking...',
+      description: 'Generating your study notes. Please wait.',
+    });
+
     try {
       const result = await generateNotes({
         subject,
         topic: values.topic,
         notesCount: values.notesCount,
         imageUrls: imageUrls.length > 0 ? imageUrls : undefined,
+        sourceText: values.sourceText,
       });
       setNotes(result);
     } catch (error) {
@@ -110,6 +132,7 @@ export function NotesGenerator({ subject }: NotesGeneratorProps) {
       });
     } finally {
       setLoading(false);
+      dismiss();
     }
   }
 
@@ -120,11 +143,50 @@ export function NotesGenerator({ subject }: NotesGeneratorProps) {
     const subjectPath = subject.toLowerCase().replace(/\s+/g, '-');
     
     const query = new URLSearchParams({
+        tab: 'quiz',
         topic: topic,
         sourceText: sourceText,
     }).toString();
 
-    router.push(`/dashboard/subjects/${subjectPath}/quiz?${query}`);
+    router.push(`/dashboard/subjects/${subjectPath}/study?${query}`);
+  }
+
+  const resetGenerator = () => {
+    setNotes(null);
+    setImageUrls([]);
+    form.reset({ topic: '', notesCount: 5, sourceText: undefined });
+  };
+
+  if (notes && notes.notes.length > 0) {
+    return (
+       <div className="space-y-6 mt-6">
+           <div className="flex flex-wrap items-center justify-between gap-4">
+            <h3 className="font-headline text-lg font-semibold">Generated Flip Cards for '{form.getValues('topic')}':</h3>
+            <div className="flex flex-wrap gap-2">
+                <Button onClick={handleConvertToQuiz}>
+                    Convert to Quiz
+                    <MoveRight className="ml-2 h-4 w-4" />
+                </Button>
+                 <Button onClick={resetGenerator} variant="outline">Start New</Button>
+            </div>
+           </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {notes.notes.map((note, index) => (
+                <FlipCard key={index} term={note.term} definition={note.definition} />
+            ))}
+          </div>
+        </div>
+    )
+  }
+  
+  if (loading) {
+    return (
+        <div className="space-y-4 mt-6">
+          <Skeleton className="h-28 w-full" />
+          <Skeleton className="h-28 w-full" />
+          <Skeleton className="h-28 w-full" />
+        </div>
+      );
   }
 
   return (
@@ -168,11 +230,27 @@ export function NotesGenerator({ subject }: NotesGeneratorProps) {
               )}
             />
             
-            <div>
-              <FormLabel>Upload Your Work (Optional)</FormLabel>
-              <p className="text-sm text-muted-foreground mb-2">Upload up to 5 images of your notes or textbook pages.</p>
-              <ImageUploader imageUrls={imageUrls} setImageUrls={setImageUrls} maxFiles={5} />
-            </div>
+            {sourceText ? (
+                <FormField
+                control={form.control}
+                name="sourceText"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Source Text from Quiz</FormLabel>
+                    <FormControl>
+                        <Textarea {...field} readOnly className="h-40 bg-secondary/50" />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+            ) : (
+                <div>
+                    <FormLabel>Upload Your Work (Optional)</FormLabel>
+                    <p className="text-sm text-muted-foreground mb-2">Upload up to 5 images of your notes or textbook pages.</p>
+                    <ImageUploader imageUrls={imageUrls} setImageUrls={setImageUrls} maxFiles={5} />
+                </div>
+            )}
           </div>
           <Button type="submit" disabled={loading} className="w-full sm:w-auto">
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -180,31 +258,6 @@ export function NotesGenerator({ subject }: NotesGeneratorProps) {
           </Button>
         </form>
       </Form>
-
-      {loading && (
-        <div className="space-y-4 mt-6">
-          <Skeleton className="h-12 w-full" />
-          <Skeleton className="h-12 w-full" />
-          <Skeleton className="h-12 w-full" />
-        </div>
-      )}
-
-      {notes && notes.notes.length > 0 && (
-        <div className="space-y-6 mt-6">
-           <div className="flex flex-wrap items-center justify-between gap-4">
-            <h3 className="font-headline text-lg font-semibold">Generated Flip Cards:</h3>
-            <Button onClick={handleConvertToQuiz}>
-                Convert Notes to Quiz
-                <MoveRight className="ml-2 h-4 w-4" />
-            </Button>
-           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {notes.notes.map((note, index) => (
-                <FlipCard key={index} term={note.term} definition={note.definition} />
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -28,7 +28,7 @@ export default function SubjectPage() {
       </Card>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-        <Link href={`/dashboard/subjects/${subject}/notes`} className="flex">
+        <Link href={`/dashboard/subjects/${subject}/study`} className="flex">
           <Card className="w-full bg-card/50 backdrop-blur-sm border-border/20 hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 flex flex-col">
             <CardHeader>
               <div className="flex items-center gap-4">
@@ -49,7 +49,7 @@ export default function SubjectPage() {
           </Card>
         </Link>
 
-        <Link href={`/dashboard/subjects/${subject}/quiz`} className="flex">
+        <Link href={`/dashboard/subjects/${subject}/study?tab=quiz`} className="flex">
           <Card className="w-full bg-card/50 backdrop-blur-sm border-border/20 hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 flex flex-col">
             <CardHeader>
                <div className="flex items-center gap-4">
