@@ -9,8 +9,13 @@ import { useTypewriter } from '@/hooks/use-typewriter';
 export function DashboardClient() {
   const { user } = useAuth();
   
-  const welcomeText = useTypewriter(`Welcome back, ${user?.displayName || user?.email?.split('@')[0] || 'learner'}!`, 50);
-  const subtitleText = useTypewriter('Continue your learning journey and explore new paths.', 25, 1000);
+  const welcomeMessage = `Welcome back, ${user?.displayName || user?.email?.split('@')[0] || 'learner'}!`;
+  const subtitleMessage = 'Continue your learning journey and explore new paths.';
+
+  const { displayedText: displayedWelcome, isTyping: isTypingWelcome } = useTypewriter(welcomeMessage, 50);
+  const { displayedText: displayedSubtitle, isTyping: isTypingSubtitle } = useTypewriter(subtitleMessage, 25, welcomeMessage.length * 50 + 500);
+  
+  const blinkingCursor = (isTyping: boolean) => isTyping && <span className="blinking-cursor" />;
 
   return (
     <div className="space-y-8">
@@ -18,13 +23,17 @@ export function DashboardClient() {
         <CardContent className="p-6 min-h-[120px]">
           <div>
             <h1 className="font-headline text-3xl font-bold tracking-tight">
-              {welcomeText.split(', ').map((part, index) => 
+              {displayedWelcome.split(', ').map((part, index) => 
                 index === 0 ? <span key={index}>{part}, </span> : <span key={index} className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">{part}</span>
               )}
+              {blinkingCursor(isTypingWelcome)}
             </h1>
           </div>
           <div>
-            <p className="text-muted-foreground">{subtitleText}</p>
+            <p className="text-muted-foreground">
+                {displayedSubtitle}
+                {blinkingCursor(isTypingSubtitle)}
+            </p>
           </div>
         </CardContent>
       </Card>
