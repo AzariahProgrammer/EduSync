@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -9,9 +10,10 @@ import {
   SidebarMenuButton,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import { BookOpenCheck, LayoutDashboard, BarChart3, UserCircle, Settings } from 'lucide-react';
+import { BookOpenCheck, LayoutDashboard, Settings } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { Separator } from '../ui/separator';
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -34,28 +36,13 @@ export function AppSidebar() {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={pathname.startsWith('/courses')} tooltip="Courses">
-              <Link href="#">
-                <BarChart3 />
-                <span className="group-data-[collapsible=icon]:hidden">Courses</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={pathname.startsWith('/profile')} tooltip="Profile">
-              <Link href="#">
-                <UserCircle />
-                <span className="group-data-[collapsible=icon]:hidden">Profile</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="p-2">
+      <SidebarFooter className="p-2 mt-auto">
+        <Separator className="my-2" />
          <SidebarMenu>
             <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Settings">
+                <SidebarMenuButton asChild tooltip="Settings" variant="outline">
                   <Link href="#">
                     <Settings />
                     <span className="group-data-[collapsible=icon]:hidden">Settings</span>
