@@ -11,13 +11,13 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
-export const NotesInputSchema = z.object({
+const NotesInputSchema = z.object({
   subject: z.string().describe('The main subject area (e.g., Mathematics, History).'),
   topic: z.string().describe('The specific topic within the subject for which to generate notes.'),
 });
 export type NotesInput = z.infer<typeof NotesInputSchema>;
 
-export const NotesOutputSchema = z.object({
+const NotesOutputSchema = z.object({
   notes: z.array(
     z.object({
       term: z.string().describe('A key term, concept, or question.'),

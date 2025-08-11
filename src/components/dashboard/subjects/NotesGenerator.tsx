@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Loader2, BookOpen, ChevronRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { generateNotes, NotesOutput } from '@/ai/flows/notes-generator';
+import { generateNotes, type NotesOutput } from '@/ai/flows/notes-generator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
