@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -28,7 +29,7 @@ const loginSchema = z.object({
 });
 
 const signupSchema = z.object({
-  username: z.string().min(3, { message: "Username must be at least 3 characters." }).max(20, { message: "Username must be less than 20 characters."}),
+  username: z.string().min(3, { message: "Username must be at least 3 characters." }).max(20, { message: "Username must be less than 20 characters."}).optional(),
   email: z.string().email({ message: "Invalid email address." }),
   password: z.string().min(6, { message: "Password must be at least 6 characters." }),
 });
@@ -60,6 +61,10 @@ export function AuthForm({ mode }: AuthFormProps) {
     try {
       if (mode === 'signup') {
         const signupValues = values as z.infer<typeof signupSchema>;
+        if (!signupValues.username) {
+          // This should ideally not happen due to form validation, but it's a good safeguard.
+          throw new Error("Username is required for signup.");
+        }
         const userCredential = await createUserWithEmailAndPassword(auth, signupValues.email, signupValues.password);
         await updateProfile(userCredential.user, {
           displayName: signupValues.username,
