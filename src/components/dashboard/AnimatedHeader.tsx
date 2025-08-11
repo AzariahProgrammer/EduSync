@@ -25,7 +25,7 @@ export function AnimatedHeader() {
     <div className="flex-1 text-center">
       <span
         key={currentPhraseIndex}
-        className="text-sm font-medium text-muted-foreground animate-fade-in-out"
+        className="text-lg font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent animate-fade-in-out"
       >
         {phrases[currentPhraseIndex]}
       </span>
