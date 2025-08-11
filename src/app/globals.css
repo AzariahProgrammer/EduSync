@@ -132,4 +132,10 @@
     .bg-sidebar {
         background-color: hsl(var(--sidebar-background));
     }
+    .animate-fade-in-up {
+      animation-name: fade-in-up;
+      animation-duration: 600ms;
+      animation-timing-function: ease-out;
+      animation-fill-mode: forwards;
+    }
 }
