@@ -42,101 +42,101 @@ export function DashboardClient() {
         <CardHeader>
           <CardTitle className="font-headline text-2xl bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">EduSync – Learn Together, Anywhere</CardTitle>
           <CardDescription>
-            Your classroom, your way — whether you’re in the same room or continents apart. EduSync unites live video, real-time messaging, assignments, scheduling, and resource sharing into one seamless platform, purpose-built to empower both students and educators.
+            Your connected learning space — built for the modern classroom, whether it’s physical, virtual, or a blend of both. EduSync combines real-time communication, interactive lessons, intelligent progress tracking, and seamless resource sharing into one intuitive platform designed to empower students, educators, and institutions.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-8">
           <div className="space-y-4 rounded-lg border border-border/50 bg-secondary/30 p-6">
-            <h3 className="flex items-center gap-3 font-headline text-xl font-semibold"><Package className="h-6 w-6 text-primary" /> A True All-in-One Learning Platform</h3>
+            <h3 className="flex items-center gap-3 font-headline text-xl font-semibold"><Package className="h-6 w-6 text-primary" /> All-in-One Digital Learning Hub</h3>
             <p className="text-muted-foreground">
-              No more juggling between apps, tabs, and tools. EduSync brings every essential feature for engaging, organized, and collaborative learning into a single, beautifully designed interface that works effortlessly on any device.
+             Say goodbye to switching between apps. With EduSync, every tool you need — from live classes to interactive assignments — is unified in a single, secure, and easy-to-use environment.
             </p>
           </div>
           
           <div>
-            <h3 className="font-headline text-xl font-semibold mb-6">Core Features</h3>
+            <h3 className="font-headline text-xl font-semibold mb-6">What You Can Do with EduSync</h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 
                 <Card className="flex flex-col">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-3"><Video className="h-6 w-6 text-primary/80" /> Live Classes</CardTitle>
-                    <CardDescription>Experience real-time learning with crystal-clear video and audio.</CardDescription>
+                    <CardTitle className="flex items-center gap-3"><Video className="h-6 w-6 text-primary/80" /> Live, Interactive Lessons</CardTitle>
+                    <CardDescription>Host and join classes with high-quality video and audio, while collaborating in real time.</CardDescription>
                   </CardHeader>
                   <CardContent className="flex-grow">
                     <ul className="space-y-2 text-sm text-muted-foreground">
-                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Screen sharing for presentations and demos</span></li>
-                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Virtual hand raising to keep classes interactive</span></li>
-                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Collaborative whiteboards for group problem-solving</span></li>
+                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Interactive whiteboard for group problem-solving</span></li>
+                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Screen sharing for presentations and walkthroughs</span></li>
+                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Virtual participation tools like polls and hand raises</span></li>
                     </ul>
                   </CardContent>
                 </Card>
 
                 <Card className="flex flex-col">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-3"><MessagesSquare className="h-6 w-6 text-primary/80" /> Real-Time Chat</CardTitle>
-                     <CardDescription>Stay connected in and out of the classroom.</CardDescription>
+                    <CardTitle className="flex items-center gap-3"><MessagesSquare className="h-6 w-6 text-primary/80" /> Instant & Organized Communication</CardTitle>
+                     <CardDescription>Keep conversations clear and accessible.</CardDescription>
                   </CardHeader>
                   <CardContent className="flex-grow">
                      <ul className="space-y-2 text-sm text-muted-foreground">
-                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Instant messaging for quick communication</span></li>
-                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Threaded discussions for organized conversations</span></li>
-                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Group chats for teamwork and study groups</span></li>
+                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Real-time chat for quick questions and feedback</span></li>
+                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Threaded discussions to keep topics focused</span></li>
+                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Private and group channels for different classes or teams</span></li>
                     </ul>
                   </CardContent>
                 </Card>
 
                 <Card className="flex flex-col">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-3"><KanbanSquare className="h-6 w-6 text-primary/80" /> Assignments Tracker</CardTitle>
-                    <CardDescription>Stay in control of your workload with a visual Kanban board.</CardDescription>
+                    <CardTitle className="flex items-center gap-3"><KanbanSquare className="h-6 w-6 text-primary/80" /> Smart Assignments & Progress Tracking</CardTitle>
+                    <CardDescription>Stay on track with intelligent task management.</CardDescription>
                   </CardHeader>
                   <CardContent className="flex-grow">
                     <ul className="space-y-2 text-sm text-muted-foreground">
-                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Auto-categorized tasks: To Do, In Progress, Completed</span></li>
-                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Deadlines and progress tracking at a glance</span></li>
-                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Assignment submissions directly within the platform</span></li>
+                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Visual boards showing To Do, In Progress, and Completed</span></li>
+                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Auto-generated progress reports for students and teachers</span></li>
+                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>In-platform submissions and instant grading options</span></li>
                     </ul>
                   </CardContent>
                 </Card>
 
                 <Card className="flex flex-col">
                   <CardHeader>
-                     <CardTitle className="flex items-center gap-3"><Calendar className="h-6 w-6 text-primary/80" /> Calendar & Smart Reminders</CardTitle>
-                     <CardDescription>Never miss a deadline or class.</CardDescription>
+                     <CardTitle className="flex items-center gap-3"><Calendar className="h-6 w-6 text-primary/80" /> Integrated Calendar & Reminders</CardTitle>
+                     <CardDescription>Never miss a class, deadline, or event.</CardDescription>
                   </CardHeader>
                   <CardContent className="flex-grow">
                     <ul className="space-y-2 text-sm text-muted-foreground">
-                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Integrated calendar that syncs with assignments and events</span></li>
-                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Automatic reminders for upcoming tasks and sessions</span></li>
-                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Daily and weekly agenda views</span></li>
+                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>All schedules in one synced calendar</span></li>
+                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Automatic reminders and notifications</span></li>
+                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Personalized daily and weekly overviews</span></li>
                     </ul>
                   </CardContent>
                 </Card>
 
                 <Card className="flex flex-col">
                    <CardHeader>
-                    <CardTitle className="flex items-center gap-3"><Folder className="h-6 w-6 text-primary/80" /> File Sharing & Resource Hub</CardTitle>
-                    <CardDescription>Keep all your learning materials in one secure place.</CardDescription>
+                    <CardTitle className="flex items-center gap-3"><Folder className="h-6 w-6 text-primary/80" /> Centralized Resource Library</CardTitle>
+                    <CardDescription>Access and share learning materials in seconds.</CardDescription>
                   </CardHeader>
                   <CardContent className="flex-grow">
                     <ul className="space-y-2 text-sm text-muted-foreground">
-                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Upload and share lecture slides, notes, and multimedia</span></li>
-                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Organize resources by subject, topic, or class</span></li>
-                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Access files anytime, from any device</span></li>
+                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Upload notes, videos, slides, and practice exercises</span></li>
+                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Organize by subject, topic, or course</span></li>
+                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Secure, cloud-based storage accessible anytime</span></li>
                     </ul>
                   </CardContent>
                 </Card>
 
                 <Card className="flex flex-col">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-3"><Trophy className="h-6 w-6 text-primary/80" /> Leaderboard & Gamification</CardTitle>
-                    <CardDescription>Make learning exciting and rewarding.</CardDescription>
+                    <CardTitle className="flex items-center gap-3"><Trophy className="h-6 w-6 text-primary/80" /> Gamified Learning Motivation</CardTitle>
+                    <CardDescription>Turn learning into a rewarding challenge.</CardDescription>
                   </CardHeader>
                   <CardContent className="flex-grow">
                     <ul className="space-y-2 text-sm text-muted-foreground">
-                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Earn points for completing tasks and participating</span></li>
-                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Climb the leaderboard with peers</span></li>
-                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Unlock badges and achievements to celebrate progress</span></li>
+                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Earn points for participation and completed tasks</span></li>
+                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Level up and unlock achievement badges</span></li>
+                      <li className="flex gap-2"><Check className="h-4 w-4 mt-0.5 shrink-0" /><span>Leaderboards to inspire healthy competition</span></li>
                     </ul>
                   </CardContent>
                 </Card>
@@ -145,7 +145,7 @@ export function DashboardClient() {
           <div className="text-center rounded-lg border border-border/50 bg-secondary/30 p-6">
              <h3 className="flex items-center justify-center gap-3 font-headline text-xl font-semibold"><Lightbulb className="h-6 w-6 text-amber-400" /> Why EduSync?</h3>
              <p className="text-muted-foreground mt-2">
-                Because education should be simple, engaging, and connected — whether you’re running a global virtual class or a small study group.
+                EduSync makes learning more than just lessons — it’s collaboration, progress, and achievement in one place.
             </p>
           </div>
         </CardContent>
