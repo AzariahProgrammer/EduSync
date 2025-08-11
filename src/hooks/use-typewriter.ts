@@ -17,9 +17,9 @@ export function useTypewriter(text: string, speed: number = 50, delay: number = 
   }, [delay]);
 
   useEffect(() => {
-    if (!start) return;
+    if (!start || !text) return;
 
-    setDisplayedText(''); // Reset on text change
+    setDisplayedText(''); 
     setIsTyping(true);
 
     if (text.length === 0) {
