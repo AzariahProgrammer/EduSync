@@ -1,14 +1,14 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Loader2, CheckCircle, XCircle, Bot, Sparkles } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, Bot } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { generateQuiz, type QuizOutput } from '@/ai/flows/quiz-generator';
 import { generateFeedback } from '@/ai/flows/quiz-feedback';
@@ -19,9 +19,12 @@ import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Slider } from '@/components/ui/slider';
+import { ImageUploader } from '@/components/common/ImageUploader';
 
 const formSchema = z.object({
   topic: z.string().min(3, { message: 'Topic must be at least 3 characters.' }),
+  questionCount: z.number().int().min(1).max(10).default(5),
 });
 
 interface QuizGeneratorProps {
@@ -35,12 +38,26 @@ export function QuizGenerator({ subject }: QuizGeneratorProps) {
   const [userAnswers, setUserAnswers] = useState<Record<number, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { topic: '' },
+    defaultValues: { topic: '', questionCount: 5 },
   });
+
+  const questionCount = form.watch('questionCount');
+
+  const topicPlaceholders = useMemo(() => ({
+    'Mathematics': "e.g., 'Algebraic Expressions' or 'Euclidean Geometry'",
+    'Physical Sciences': "e.g., 'Organic Chemistry' or 'Electromagnetism'",
+    'Life Sciences': "e.g., 'Genetics and Inheritance' or 'Human Evolution'",
+    'History': "e.g., 'The Cold War' or 'Civil Rights Movement'",
+    'Geography': "e.g., 'Urban Settlement' or 'Geomorphology'",
+    'Default': "e.g., 'Test Your Knowledge' or 'Chapter 5 Quiz'",
+  }), []);
+
+  const placeholder = topicPlaceholders[subject as keyof typeof topicPlaceholders] || topicPlaceholders.Default;
 
   async function onFormSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
@@ -49,7 +66,12 @@ export function QuizGenerator({ subject }: QuizGeneratorProps) {
     setSubmitted(false);
     setFeedback(null);
     try {
-      const result = await generateQuiz({ subject, topic: values.topic, questionCount: 5 });
+      const result = await generateQuiz({
+        subject,
+        topic: values.topic,
+        questionCount: values.questionCount,
+        imageUrls: imageUrls.length > 0 ? imageUrls : undefined,
+      });
       setQuiz(result);
     } catch (error) {
       console.error(error);
@@ -81,7 +103,7 @@ export function QuizGenerator({ subject }: QuizGeneratorProps) {
         topic: form.getValues('topic'),
         incorrectAnswers: incorrectAnswers.map(q => ({
           questionText: q.questionText,
-          userAnswer: q.userAnswer,
+          userAnswer: q.userAnswer || "Not answered",
           correctAnswer: q.correctAnswer,
           explanation: q.explanation
         })),
@@ -105,7 +127,7 @@ export function QuizGenerator({ subject }: QuizGeneratorProps) {
       return userAnswers[index] === question.correctAnswer ? score + 1 : score;
     }, 0);
     const total = quiz.questions.length;
-    return { correct, total, percentage: Math.round((correct / total) * 100) };
+    return { correct, total, percentage: total > 0 ? Math.round((correct / total) * 100) : 0 };
   };
 
   const score = calculateScore();
@@ -116,25 +138,68 @@ export function QuizGenerator({ subject }: QuizGeneratorProps) {
     return 'bg-red-500';
   }
 
+  const restartQuiz = () => {
+    onFormSubmit(form.getValues());
+  }
+
+  const startNewQuiz = () => {
+    setQuiz(null);
+    setUserAnswers({});
+    setSubmitted(false);
+    setFeedback(null);
+    setImageUrls([]);
+    form.reset();
+  }
+
   return (
     <div className="space-y-6">
-      {!submitted && (
+      {!quiz && (
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onFormSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="topic"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Topic</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g., 'Photosynthesis' or 'World War II'" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" disabled={loading}>
+          <form onSubmit={form.handleSubmit(onFormSubmit)} className="space-y-8">
+            <div className="space-y-4">
+                <FormField
+                control={form.control}
+                name="topic"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Topic</FormLabel>
+                    <FormControl>
+                        <Input placeholder={placeholder} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+
+                <FormField
+                control={form.control}
+                name="questionCount"
+                render={({ field }) => (
+                    <FormItem>
+                    <div className="flex justify-between items-center">
+                        <FormLabel>Number of Questions</FormLabel>
+                        <Badge variant="secondary" className="px-3 py-1 text-base">{questionCount}</Badge>
+                    </div>
+                    <FormControl>
+                        <Slider
+                        min={1}
+                        max={10}
+                        step={1}
+                        value={[field.value]}
+                        onValueChange={(value) => field.onChange(value[0])}
+                        />
+                    </FormControl>
+                    </FormItem>
+                )}
+                />
+
+                <div>
+                <FormLabel>Upload Your Work (Optional)</FormLabel>
+                <p className="text-sm text-muted-foreground mb-2">Upload up to 5 images of your worksheets or textbook pages.</p>
+                <ImageUploader imageUrls={imageUrls} setImageUrls={setImageUrls} maxFiles={5} />
+                </div>
+            </div>
+            <Button type="submit" disabled={loading} className="w-full sm:w-auto">
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Create Quiz
             </Button>
@@ -152,7 +217,7 @@ export function QuizGenerator({ subject }: QuizGeneratorProps) {
 
       {quiz && !submitted && (
         <div className="space-y-4 mt-6">
-            <h3 className="font-headline text-lg font-semibold">Generated Quiz:</h3>
+            <h3 className="font-headline text-lg font-semibold">Generated Quiz on {form.getValues('topic')}:</h3>
             {quiz.questions.map((q, index) => (
                 <Card key={index} className="bg-secondary/30">
                     <CardHeader>
@@ -161,12 +226,14 @@ export function QuizGenerator({ subject }: QuizGeneratorProps) {
                     </CardHeader>
                     <CardContent>
                         <RadioGroup onValueChange={(value) => handleAnswerChange(index, value)}>
-                            {q.options.map((option, optIndex) => (
-                                <div key={optIndex} className="flex items-center space-x-2 p-2 rounded-md hover:bg-primary/10">
-                                    <RadioGroupItem value={option} id={`q${index}-opt${optIndex}`} />
-                                    <Label htmlFor={`q${index}-opt${optIndex}`} className="flex-1 cursor-pointer">{option}</Label>
-                                </div>
-                            ))}
+                            <div className="space-y-2">
+                                {q.options.map((option, optIndex) => (
+                                    <div key={optIndex} className="flex items-center space-x-3 p-3 rounded-md transition-colors hover:bg-primary/10 has-[[data-state=checked]]:bg-primary/10">
+                                        <RadioGroupItem value={option} id={`q${index}-opt${optIndex}`} />
+                                        <Label htmlFor={`q${index}-opt${optIndex}`} className="flex-1 cursor-pointer font-normal">{option}</Label>
+                                    </div>
+                                ))}
+                            </div>
                         </RadioGroup>
                     </CardContent>
                 </Card>
@@ -182,7 +249,7 @@ export function QuizGenerator({ subject }: QuizGeneratorProps) {
              <Card className="bg-secondary/30 border-primary/50">
                 <CardHeader>
                     <CardTitle className="font-headline text-2xl">Quiz Results</CardTitle>
-                    <CardDescription>You scored {score.correct} out of {score.total}</CardDescription>
+                    <CardDescription>You scored {score.correct} out of {score.total} on the topic: <span className="font-semibold">{form.getValues('topic')}</span></CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center gap-4">
@@ -226,16 +293,18 @@ export function QuizGenerator({ subject }: QuizGeneratorProps) {
                         </CardHeader>
                         <CardContent>
                              <RadioGroup value={userAnswer} disabled>
+                                <div className="space-y-2">
                                 {q.options.map((option, optIndex) => (
-                                    <div key={optIndex} className="flex items-center space-x-2 p-2 rounded-md">
+                                    <div key={optIndex} className="flex items-center space-x-3 p-2 rounded-md">
                                         <RadioGroupItem value={option} id={`result-q${index}-opt${optIndex}`} />
                                         <Label htmlFor={`result-q${index}-opt${optIndex}`} className={cn(
-                                            'cursor-not-allowed',
+                                            'cursor-not-allowed font-normal',
                                             option === q.correctAnswer && 'font-bold text-green-400',
                                             option === userAnswer && !isCorrect && 'text-red-400 line-through'
                                         )}>{option}</Label>
                                     </div>
                                 ))}
+                                </div>
                             </RadioGroup>
                         </CardContent>
                         <CardFooter className="flex flex-col items-start border-t border-border/50 pt-4 bg-background/30">
@@ -245,9 +314,14 @@ export function QuizGenerator({ subject }: QuizGeneratorProps) {
                     </Card>
                 )
             })}
-             <Button onClick={() => onFormSubmit({ topic: form.getValues('topic') })}>
-                Try Another Quiz on this Topic
-            </Button>
+             <div className="flex flex-wrap gap-4">
+                <Button onClick={restartQuiz}>
+                    Try Quiz Again
+                </Button>
+                 <Button onClick={startNewQuiz} variant="outline">
+                    Start a New Quiz
+                </Button>
+             </div>
          </div>
       )}
     </div>
