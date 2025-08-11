@@ -39,12 +39,14 @@ export function DashboardClient() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="font-headline text-3xl font-bold tracking-tight">
-          Welcome back, <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">{user?.displayName || user?.email?.split('@')[0] || 'learner'}</span>!
-        </h1>
-        <p className="text-muted-foreground">Continue your learning journey and explore new paths.</p>
-      </div>
+      <Card className="bg-card/50 backdrop-blur-sm border-border/20">
+        <CardContent className="p-6">
+          <h1 className="font-headline text-3xl font-bold tracking-tight">
+            Welcome back, <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">{user?.displayName || user?.email?.split('@')[0] || 'learner'}</span>!
+          </h1>
+          <p className="text-muted-foreground">Continue your learning journey and explore new paths.</p>
+        </CardContent>
+      </Card>
 
       <AILearningPath />
 
