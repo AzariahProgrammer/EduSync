@@ -2,7 +2,7 @@ import { AuthForm } from '@/components/auth/AuthForm';
 import { BookOpenCheck } from 'lucide-react';
 import Link from 'next/link';
 
-export default function LoginPage() {
+export default function SignupPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
       <div className="w-full max-w-md">
@@ -11,13 +11,13 @@ export default function LoginPage() {
             <BookOpenCheck className="h-8 w-8" />
             <h1 className="font-headline text-3xl font-bold">EduSync</h1>
           </div>
-          <p className="text-muted-foreground">Welcome back! Please login to your account.</p>
+          <p className="text-muted-foreground">Create an account to start your learning journey.</p>
         </div>
-        <AuthForm mode="login" />
+        <AuthForm mode="signup" />
         <p className="mt-4 text-center text-sm text-muted-foreground">
-          Don't have an account?{' '}
-          <Link href="/signup" className="font-semibold text-primary transition-colors hover:text-primary/80">
-            Sign up
+          Already have an account?{' '}
+          <Link href="/" className="font-semibold text-primary transition-colors hover:text-primary/80">
+            Log in
           </Link>
         </p>
       </div>
