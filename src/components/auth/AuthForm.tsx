@@ -29,11 +29,11 @@ const loginSchema = z.object({
 });
 
 const signupSchema = z.object({
-  username: z.string().min(3, { message: "Username must be at least 3 characters." }).max(20, { message: "Username must be less than 20 characters."}).optional(),
+  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
+  surname: z.string().min(2, { message: "Surname must be at least 2 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
   password: z.string().min(6, { message: "Password must be at least 6 characters." }),
 });
-
 
 interface AuthFormProps {
   mode: 'login' | 'signup';
@@ -52,7 +52,7 @@ export function AuthForm({ mode }: AuthFormProps) {
     defaultValues: {
       email: '',
       password: '',
-      ...(mode === 'signup' && { username: '' }),
+      ...(mode === 'signup' && { name: '', surname: '' }),
     },
   });
 
@@ -61,13 +61,9 @@ export function AuthForm({ mode }: AuthFormProps) {
     try {
       if (mode === 'signup') {
         const signupValues = values as z.infer<typeof signupSchema>;
-        if (!signupValues.username) {
-          // This should ideally not happen due to form validation, but it's a good safeguard.
-          throw new Error("Username is required for signup.");
-        }
         const userCredential = await createUserWithEmailAndPassword(auth, signupValues.email, signupValues.password);
         await updateProfile(userCredential.user, {
-          displayName: signupValues.username,
+          displayName: `${signupValues.name} ${signupValues.surname}`,
         });
       } else {
         const loginValues = values as z.infer<typeof loginSchema>;
@@ -102,19 +98,34 @@ export function AuthForm({ mode }: AuthFormProps) {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="space-y-4">
             {mode === 'signup' && (
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input placeholder="your_username" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+               <div className="flex flex-col sm:flex-row gap-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="John" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="surname"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>Surname</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Doe" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             )}
             <FormField
               control={form.control}
