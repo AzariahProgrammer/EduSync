@@ -8,7 +8,6 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/dashboard/AppSidebar';
 import { Header } from '@/components/dashboard/Header';
 import { BookOpenCheck, Loader2 } from 'lucide-react';
-import { LoadingScreen } from '@/components/common/LoadingScreen';
 
 export default function DashboardLayout({
   children,
@@ -25,7 +24,17 @@ export default function DashboardLayout({
   }, [user, loading, router]);
 
   if (loading || !user) {
-    return <LoadingScreen />;
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-background grid-bg">
+        <div className="flex flex-col items-center gap-4">
+          <div className="mb-4 flex items-center gap-3 text-2xl font-bold text-primary">
+            <BookOpenCheck className="h-10 w-10 animate-pulse" />
+            <h1 className="font-headline text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">EduSync</h1>
+          </div>
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </div>
+    );
   }
 
   return (

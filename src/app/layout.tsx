@@ -1,13 +1,11 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
 import type { Metadata } from 'next';
 import './globals.css';
 import { AuthProvider } from '@/context/AuthContext';
 import { Toaster } from '@/components/ui/toaster';
 import { SelectionMenu } from '@/components/common/SelectionMenu';
-import { LoadingScreen } from '@/components/common/LoadingScreen';
 import { cn } from '@/lib/utils';
 
 export default function RootLayout({
@@ -15,22 +13,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [mounted, setMounted] = useState(false);
-  const [closing, setClosing] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-
-    const timer = setTimeout(() => {
-      setClosing(true); 
-    }, 4000);
-
-    return () => clearTimeout(timer);
-  }, []);
-  
-  const showLoadingScreen = !mounted || (mounted && !closing);
-
-
   return (
     <html lang="en" className="dark">
       <head>
@@ -44,15 +26,12 @@ export default function RootLayout({
         <meta name="description" content="Your personalized learning journey." />
       </head>
       <body className="font-body antialiased">
-        {showLoadingScreen && <LoadingScreen isClosing={closing} />}
-        <div className={cn("transition-opacity duration-500", showLoadingScreen ? "opacity-0" : "opacity-100")}>
-          <AuthProvider>
-            <SelectionMenu>
-              {children}
-            </SelectionMenu>
-            <Toaster />
-          </AuthProvider>
-        </div>
+        <AuthProvider>
+          <SelectionMenu>
+            {children}
+          </SelectionMenu>
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );
