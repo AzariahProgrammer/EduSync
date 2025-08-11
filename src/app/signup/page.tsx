@@ -22,12 +22,16 @@ export default function SignupPage() {
           </CardContent>
         </Card>
         <AuthForm mode="signup" />
-        <p className="mt-6 text-center text-sm text-muted-foreground">
-          Already have an account?{' '}
-          <Link href="/" className="font-semibold text-primary/90 transition-colors hover:text-primary">
-            Log in
-          </Link>
-        </p>
+        <Card className="bg-card/50 backdrop-blur-sm border-border/20">
+          <CardContent className="p-4 text-center">
+            <p className="text-sm text-muted-foreground">
+              Already have an account?{' '}
+              <Link href="/" className="font-semibold text-primary/90 transition-colors hover:text-primary">
+                Log in
+              </Link>
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
