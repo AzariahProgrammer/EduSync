@@ -3,9 +3,9 @@
 
 import { useParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { NotesGenerator } from '@/components/dashboard/subjects/NotesGenerator';
-import { QuizGenerator } from '@/components/dashboard/subjects/QuizGenerator';
-import { BookCopy, FileQuestion } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { BookCopy, FileQuestion, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 export default function SubjectPage() {
   const params = useParams();
@@ -22,41 +22,53 @@ export default function SubjectPage() {
         <CardHeader>
           <CardTitle className="font-headline text-3xl">{formattedSubject}</CardTitle>
           <CardDescription>
-            Use the AI tools below to generate study materials for this subject.
+            Choose an AI-powered tool to begin your study session for {formattedSubject}.
           </CardDescription>
         </CardHeader>
       </Card>
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-        <Card className="bg-card/50 backdrop-blur-sm border-border/20">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <BookCopy className="h-6 w-6 text-primary" />
-              <CardTitle className="font-headline text-2xl">Generate Notes</CardTitle>
-            </div>
-            <CardDescription>
-              Enter a topic to generate concise, flashcard-style notes.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <NotesGenerator subject={formattedSubject} />
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+        <Link href={`/dashboard/subjects/${subject}/notes`} className="flex">
+          <Card className="w-full bg-card/50 backdrop-blur-sm border-border/20 hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 flex flex-col">
+            <CardHeader>
+              <div className="flex items-center gap-4">
+                <BookCopy className="h-8 w-8 text-primary" />
+                <div>
+                  <CardTitle className="font-headline text-2xl">Generate Notes</CardTitle>
+                  <CardDescription>
+                    Create concise, flashcard-style notes for any topic.
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="flex-grow flex items-end justify-end">
+                <Button variant="ghost" className="text-primary hover:text-primary">
+                    Start Generating <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+            </CardContent>
+          </Card>
+        </Link>
 
-        <Card className="bg-card/50 backdrop-blur-sm border-border/20">
-          <CardHeader>
-             <div className="flex items-center gap-3">
-              <FileQuestion className="h-6 w-6 text-primary" />
-              <CardTitle className="font-headline text-2xl">Create a Quiz</CardTitle>
-            </div>
-            <CardDescription>
-              Enter a topic to generate a multiple-choice quiz to test your knowledge.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <QuizGenerator subject={formattedSubject} />
-          </CardContent>
-        </Card>
+        <Link href={`/dashboard/subjects/${subject}/quiz`} className="flex">
+          <Card className="w-full bg-card/50 backdrop-blur-sm border-border/20 hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 flex flex-col">
+            <CardHeader>
+               <div className="flex items-center gap-4">
+                <FileQuestion className="h-8 w-8 text-primary" />
+                 <div>
+                    <CardTitle className="font-headline text-2xl">Create a Quiz</CardTitle>
+                    <CardDescription>
+                    Test your knowledge with a multiple-choice quiz.
+                    </CardDescription>
+                 </div>
+              </div>
+            </CardHeader>
+            <CardContent className="flex-grow flex items-end justify-end">
+                <Button variant="ghost" className="text-primary hover:text-primary">
+                    Start Quizzer <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+            </CardContent>
+          </Card>
+        </Link>
       </div>
     </div>
   );
