@@ -1,42 +1,48 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Atom, Briefcase, BookOpen, Brush, FolderKanban } from 'lucide-react';
+import { Atom, Briefcase, BookOpen, Brush, FolderKanban, Languages } from 'lucide-react';
+import Link from 'next/link';
 
 const subjectCategories = [
   {
     title: 'Sciences & Mathematics',
     icon: <Atom className="h-6 w-6 text-primary" />,
     subjects: [
-      'Mathematics (Pure Maths)',
-      'Mathematical Literacy',
-      'Physical Sciences (Physics & Chemistry)',
-      'Life Sciences (Biology)',
+      { name: 'Mathematics (Pure Maths)', path: 'mathematics' },
+      { name: 'Mathematical Literacy', path: 'mathematical-literacy' },
+      { name: 'Physical Sciences (Physics & Chemistry)', path: 'physical-sciences' },
+      { name: 'Life Sciences (Biology)', path: 'life-sciences' },
     ],
   },
   {
     title: 'Commerce & Technology',
     icon: <Briefcase className="h-6 w-6 text-primary" />,
     subjects: [
-      'Accounting',
-      'Business Studies',
-      'Economics',
-      'Information Technology (IT)',
-      'Computer Applications Technology (CAT)',
+      { name: 'Accounting', path: 'accounting' },
+      { name: 'Business Studies', path: 'business-studies' },
+      { name: 'Economics', path: 'economics' },
+      { name: 'Information Technology (IT)', path: 'it' },
+      { name: 'Computer Applications Technology (CAT)', path: 'cat' },
     ],
   },
   {
     title: 'Humanities & Social Sciences',
     icon: <BookOpen className="h-6 w-6 text-primary" />,
     subjects: [
-      'History',
-      'Geography',
-      'Religious Education / World of Religion',
+      { name: 'History', path: 'history' },
+      { name: 'Geography', path: 'geography' },
+      { name: 'Religious Education / World of Religion', path: 'religious-education' },
     ],
   },
   {
     title: 'Creative, Cultural & Language Arts',
-    icon: <Brush className="h-6 w-6 text-primary" />,
-    subjects: ['Visual Arts'],
+    icon: <Languages className="h-6 w-6 text-primary" />,
+    subjects: [
+      { name: 'Visual Arts', path: 'visual-arts' },
+      { name: 'English', path: 'english' },
+      { name: 'Afrikaans', path: 'afrikaans' },
+      { name: 'Zulu', path: 'zulu' },
+    ],
   },
 ];
 
@@ -47,10 +53,10 @@ export default function SubjectsPage() {
         <CardHeader>
           <div className="flex items-center gap-3">
             <FolderKanban className="h-6 w-6 text-primary" />
-            <CardTitle className="font-headline text-2xl">Subjects</CardTitle>
+            <CardTitle className="font-headline text-2xl">Subjects (South African Curriculum)</CardTitle>
           </div>
           <CardDescription>
-            Browse and select from the available subjects organized by category.
+            Select a subject to generate AI-powered notes and quizzes.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -66,9 +72,11 @@ export default function SubjectsPage() {
                 <CardContent className="flex-grow">
                   <ul className="space-y-3">
                     {category.subjects.map((subject) => (
-                      <li key={subject} className="flex items-center">
-                        <div className="h-2 w-2 rounded-full bg-primary/70 mr-3 shrink-0"></div>
-                        <span className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer">{subject}</span>
+                      <li key={subject.path}>
+                        <Link href={`/dashboard/subjects/${subject.path}`} className="flex items-center group">
+                          <div className="h-2 w-2 rounded-full bg-primary/70 mr-3 shrink-0 group-hover:bg-primary transition-colors"></div>
+                          <span className="text-muted-foreground group-hover:text-foreground transition-colors">{subject.name}</span>
+                        </Link>
                       </li>
                     ))}
                   </ul>
