@@ -34,6 +34,14 @@
     --chart-4: 260 65% 60%;
     --chart-5: 260 75% 55%;
     --radius: 0.5rem;
+
+    /* Sidebar Variables */
+    --sidebar-background: 260 10% 6%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-border: 260 15% 15%;
+    --sidebar-accent: 260 15% 15%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-ring: 260 70% 70%;
   }
  
   .dark {
@@ -61,6 +69,14 @@
     --chart-3: 260 80% 55%;
     --chart-4: 260 65% 60%;
     --chart-5: 260 75% 55%;
+
+    /* Sidebar Variables */
+    --sidebar-background: 260 10% 6%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-border: 260 15% 15%;
+    --sidebar-accent: 260 15% 15%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-ring: 260 70% 70%;
   }
 }
 
@@ -110,4 +126,10 @@
     caret-color: hsl(var(--foreground));
     transition: background-color 5000s ease-in-out 0s;
   }
+}
+
+@layer utilities {
+    .bg-sidebar {
+        background-color: hsl(var(--sidebar-background));
+    }
 }
