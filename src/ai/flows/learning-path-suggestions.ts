@@ -27,8 +27,11 @@ export type LearningPathSuggestionsInput = z.infer<
 
 const LearningPathSuggestionsOutputSchema = z.object({
   suggestedMaterials: z
-    .array(z.string())
-    .describe('A list of learning materials suggested to the user.'),
+    .array(z.object({
+      title: z.string().describe("Title for the code example."),
+      code: z.string().describe("The code example to be displayed to the user."),
+    }))
+    .describe('A list of learning materials suggested to the user, including code examples.'),
 });
 export type LearningPathSuggestionsOutput = z.infer<
   typeof LearningPathSuggestionsOutputSchema
@@ -50,7 +53,8 @@ const learningPathSuggestionsPrompt = ai.definePrompt({
   User Activity: {{{userActivity}}}
 
   Suggest learning materials that will help the user achieve their learning goals, considering their past activity.
-  Return a list of learning materials suggested to the user.
+  Provide a list of at least 3 suggestions. Each suggestion must include a clear title and a relevant, useful code snippet.
+  The code should be well-formatted and demonstrate a key concept. For example, if the goal is to learn React, provide a simple component example.
   `,
 });
 

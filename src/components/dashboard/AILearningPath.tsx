@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -9,9 +10,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Loader2, Sparkles, BookMarked } from 'lucide-react';
+import { Loader2, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '../ui/skeleton';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { CodeBlock } from '../common/CodeBlock';
 
 const formSchema = z.object({
   learningGoals: z.string().min(10, {
@@ -61,7 +64,7 @@ export function AILearningPath() {
           <CardTitle className="font-headline text-2xl">Personalized Learning Path</CardTitle>
         </div>
         <CardDescription>
-          Tell us your goals, and our AI will suggest the next steps in your learning journey.
+          Tell us your goals, and our AI will suggest the next steps in your learning journey with code examples.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -75,7 +78,7 @@ export function AILearningPath() {
                   <FormLabel>What do you want to learn next?</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="e.g., 'I want to become a full-stack developer' or 'Master Next.js and server components'"
+                      placeholder="e.g., 'I want to master React state management' or 'Learn how to use Firebase with Next.js'"
                       className="resize-none bg-background/50"
                       {...field}
                     />
@@ -92,22 +95,26 @@ export function AILearningPath() {
         </Form>
         {loading && (
           <div className="mt-6 space-y-3">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-2/3" />
-            <Skeleton className="h-10 w-1/2" />
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
           </div>
         )}
         {suggestions && suggestions.suggestedMaterials.length > 0 && (
           <div className="mt-6">
             <h3 className="font-headline text-lg font-semibold mb-3">Here's your suggested path:</h3>
-            <ul className="space-y-2">
+            <Accordion type="single" collapsible className="w-full">
               {suggestions.suggestedMaterials.map((material, index) => (
-                <li key={index} className="flex items-start gap-3 rounded-md border border-border/50 bg-background/50 p-3 transition-colors hover:bg-secondary/40">
-                  <BookMarked className="mt-1 h-4 w-4 flex-shrink-0 text-primary/80" />
-                  <span>{material}</span>
-                </li>
+                <AccordionItem value={`item-${index}`} key={index}>
+                  <AccordionTrigger className="font-medium text-left hover:no-underline">
+                    {material.title}
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <CodeBlock language="javascript" value={material.code} />
+                  </AccordionContent>
+                </AccordionItem>
               ))}
-            </ul>
+            </Accordion>
           </div>
         )}
       </CardContent>
